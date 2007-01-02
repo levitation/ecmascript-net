@@ -6,8 +6,16 @@ using (Context cx = Context.Enter ()) {
   // This must be done before scripts can be executed.                    
   ScriptableObject scope = cx.InitStandardObjects ();
  
- 	// Evaluate 'print('Hi')'
-  cx.EvaluateString (scope, "print('Hi')", "sample", 1, null);
+  // Evaluate 'print('Hi')'
+  cx.EvaluateString (scope, @"
+     
+     var x = 0;
+     for (var x = 0; x < 10; x++) {
+         print ("x: " + x);
+     }
+  
+  ", "sample", 1, null);
 
+  Console.WriteLine (scope.Get ("x", scope"));
 }
 }}}
