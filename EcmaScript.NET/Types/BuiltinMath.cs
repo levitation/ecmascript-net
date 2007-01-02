@@ -303,7 +303,7 @@ namespace EcmaScript.NET.Types
 
                 case Id_pow:
                     x = ScriptConvert.ToNumber (args, 0);
-                    x = js_pow (x, ScriptConvert.ToNumber (args, 1));
+                    x = ImplPow (x, ScriptConvert.ToNumber (args, 1));
                     break;
 
 
@@ -358,7 +358,7 @@ namespace EcmaScript.NET.Types
         }
 
         // See Ecma 15.8.2.13
-        private double js_pow (double x, double y)
+        private double ImplPow (double x, double y)
         {
             double result;
             if (double.IsNaN (y)) {

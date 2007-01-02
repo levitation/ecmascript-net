@@ -300,7 +300,7 @@ namespace EcmaScript.NET.Types.E4X
                     return realThis (thisObj, f).ToString ();
 
                 case Id_toSource:
-                    return realThis (thisObj, f).js_toSource ();
+                    return realThis (thisObj, f).ImplToSource ();
             }
             throw new System.ArgumentException (System.Convert.ToString (id));
         }
@@ -329,7 +329,7 @@ namespace EcmaScript.NET.Types.E4X
             }
         }
 
-        private string js_toSource ()
+        private string ImplToSource ()
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder ();
             sb.Append ('(');

@@ -43,7 +43,7 @@ namespace EcmaScript.NET.Types
 
         private static readonly object DATE_TAG = new object ();
 
-        private const string js_NaN_date_str = "Invalid Date";
+        private const string NaNDateToString = "Invalid Date";
 
         internal static void Init (IScriptable scope, bool zealed)
         {
@@ -362,7 +362,7 @@ namespace EcmaScript.NET.Types
                     if (!double.IsNaN (t)) {
                         return date_format (t, id);
                     }
-                    return js_NaN_date_str;
+                    return NaNDateToString;
 
 
                 case Id_toLocaleString:
@@ -371,14 +371,14 @@ namespace EcmaScript.NET.Types
                     if (!double.IsNaN (t)) {
                         return toLocale_helper (t, id);
                     }
-                    return js_NaN_date_str;
+                    return NaNDateToString;
 
 
                 case Id_toUTCString:
                     if (!double.IsNaN (t)) {
-                        return js_toUTCString (t);
+                        return ImplToUTCString (t);
                     }
-                    return js_NaN_date_str;
+                    return NaNDateToString;
 
 
                 case Id_toSource:
@@ -1458,7 +1458,7 @@ namespace EcmaScript.NET.Types
             throw Context.CodeBug ();
         }
 
-        private static string js_toUTCString (double date)
+        private static string ImplToUTCString (double date)
         {
             System.Text.StringBuilder result = new System.Text.StringBuilder (60);
 
