@@ -1,0 +1,13 @@
+{{{
+// Associate a new Context with this thread
+using (Context cx = Context.Enter ()) {
+  
+  // Initialize the standard objects (Object, Function, etc.)
+  // This must be done before scripts can be executed.                    
+  ScriptableObject scope = cx.InitStandardObjects ();
+ 
+ 	// Evaluate 'print('Hi')'
+  cx.EvaluateString (scope, "print('Hi')", "sample", 1, null);
+
+}
+}}}
