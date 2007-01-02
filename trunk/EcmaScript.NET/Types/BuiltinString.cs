@@ -344,11 +344,11 @@ namespace EcmaScript.NET.Types
 
 
                 case Id_indexOf:
-                    return js_indexOf (ScriptConvert.ToString (thisObj), args);
+                    return ImplIndexOf (ScriptConvert.ToString (thisObj), args);
 
 
                 case Id_lastIndexOf:
-                    return js_lastIndexOf (ScriptConvert.ToString (thisObj), args);
+                    return ImplLastIndexOf (ScriptConvert.ToString (thisObj), args);
 
 
                 case Id_split:
@@ -356,7 +356,7 @@ namespace EcmaScript.NET.Types
 
 
                 case Id_substring:
-                    return js_substring (cx, ScriptConvert.ToString (thisObj), args);
+                    return ImplSubstring (cx, ScriptConvert.ToString (thisObj), args);
 
 
                 case Id_toLowerCase:
@@ -369,15 +369,15 @@ namespace EcmaScript.NET.Types
                     return ScriptConvert.ToString (thisObj).ToUpper ();
 
                 case Id_substr:
-                    return js_substr (ScriptConvert.ToString (thisObj), args);
+                    return ImplSubstr (ScriptConvert.ToString (thisObj), args);
 
 
                 case Id_concat:
-                    return js_concat (ScriptConvert.ToString (thisObj), args);
+                    return ImplConcat (ScriptConvert.ToString (thisObj), args);
 
 
                 case Id_slice:
-                    return js_slice (ScriptConvert.ToString (thisObj), args);
+                    return ImplSlice (ScriptConvert.ToString (thisObj), args);
 
 
                 case Id_bold:
@@ -524,7 +524,7 @@ namespace EcmaScript.NET.Types
         * See ECMA 15.5.4.6.  Uses Java String.indexOf()
         * OPT to add - BMH searching from jsstr.c.
         */
-        private static int js_indexOf (string target, object [] args)
+        private static int ImplIndexOf (string target, object [] args)
         {
             string search = ScriptConvert.ToString (args, 0);
             double begin = ScriptConvert.ToInteger (args, 1);
@@ -544,7 +544,7 @@ namespace EcmaScript.NET.Types
         * See ECMA 15.5.4.7
         *
         */
-        private static int js_lastIndexOf (string target, object [] args)
+        private static int ImplLastIndexOf (string target, object [] args)
         {
             string search = ScriptConvert.ToString (args, 0);
             double end = ScriptConvert.ToNumber (args, 1);
@@ -606,7 +606,7 @@ namespace EcmaScript.NET.Types
         }
 
         /*
-        * Used by js_split to find the next split point in target,
+        * Used by ImplSplit to find the next split point in target,
         * starting at offset ip and looking either for the given
         * separator substring, or for the next re match.  ip and
         * matchlen must be reference variables (assumed to be arrays of
@@ -617,7 +617,7 @@ namespace EcmaScript.NET.Types
         * separator occurrence if found, or the string length if no
         * separator is found.
         */
-        private static int find_split (Context cx, IScriptable scope, string target, string separator, Context.Versions version, RegExpProxy reProxy, IScriptable re, int [] ip, int [] matchlen, bool [] matched, string [] [] parensp)
+        private static int FindSplit (Context cx, IScriptable scope, string target, string separator, Context.Versions version, RegExpProxy reProxy, IScriptable re, int [] ip, int [] matchlen, bool [] matched, string [] [] parensp)
         {
             int i = ip [0];
             int length = target.Length;
@@ -769,7 +769,7 @@ namespace EcmaScript.NET.Types
             bool [] matched = new bool [] { false };
             string [] [] parens = new string [] [] { null };
             Context.Versions version = cx.Version;
-            while ((match = find_split (cx, scope, target, separator, version, reProxy, re, ip, matchlen, matched, parens)) >= 0) {
+            while ((match = FindSplit (cx, scope, target, separator, version, reProxy, re, ip, matchlen, matched, parens)) >= 0) {
                 if ((limited && len >= limit) || (match > target.Length))
                     break;
 
@@ -817,7 +817,7 @@ namespace EcmaScript.NET.Types
         /*
         * See ECMA 15.5.4.15
         */
-        private static string js_substring (Context cx, string target, object [] args)
+        private static string ImplSubstring (Context cx, string target, object [] args)
         {
             int length = target.Length;
             double start = ScriptConvert.ToInteger (args, 0);
@@ -857,7 +857,7 @@ namespace EcmaScript.NET.Types
         /*
         * Non-ECMA methods.
         */
-        private static string js_substr (string target, object [] args)
+        private static string ImplSubstr (string target, object [] args)
         {
             if (args.Length < 1)
                 return target;
@@ -893,7 +893,7 @@ namespace EcmaScript.NET.Types
         /*
         * Python-esque sequence operations.
         */
-        private static string js_concat (string target, object [] args)
+        private static string ImplConcat (string target, object [] args)
         {
             int N = args.Length;
             if (N == 0) {
@@ -922,7 +922,7 @@ namespace EcmaScript.NET.Types
             return result.ToString ();
         }
 
-        private static string js_slice (string target, object [] args)
+        private static string ImplSlice (string target, object [] args)
         {
             if (args.Length != 0) {
                 double begin = ScriptConvert.ToInteger (args [0]);

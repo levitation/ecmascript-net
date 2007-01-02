@@ -76,7 +76,7 @@ namespace EcmaScript.NET.Types
 
         public override string ToString ()
         {
-            return js_toString (this);
+            return ImplToString (this);
         }
 
         protected internal override void InitPrototypeId (int id)
@@ -120,21 +120,21 @@ namespace EcmaScript.NET.Types
 
 
                 case Id_toString:
-                    return js_toString (thisObj);
+                    return ImplToString (thisObj);
 
 
                 case Id_toSource:
-                    return js_toSource (cx, scope, thisObj);
+                    return ImplToSource (cx, scope, thisObj);
             }
             throw new ArgumentException (Convert.ToString (id));
         }
 
-        private static string js_toString (IScriptable thisObj)
+        private static string ImplToString (IScriptable thisObj)
         {
             return getString (thisObj, "name") + ": " + getString (thisObj, "message");
         }
 
-        private static string js_toSource (Context cx, IScriptable scope, IScriptable thisObj)
+        private static string ImplToSource (Context cx, IScriptable scope, IScriptable thisObj)
         {
             // Emulation of SpiderMonkey behavior
             object name = ScriptableObject.GetProperty (thisObj, "name");

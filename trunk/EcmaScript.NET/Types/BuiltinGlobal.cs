@@ -159,7 +159,7 @@ namespace EcmaScript.NET.Types
 
 
                     case Id_escape:
-                        return js_escape (args);
+                        return ImplEscape (args);
 
 
                     case Id_eval:
@@ -201,15 +201,15 @@ namespace EcmaScript.NET.Types
 
 
                     case Id_parseFloat:
-                        return js_parseFloat (args);
+                        return ImplParseFloat (args);
 
 
                     case Id_parseInt:
-                        return js_parseInt (args);
+                        return ImplParseInt (args);
 
 
                     case Id_unescape:
-                        return js_unescape (args);
+                        return ImplUnescape (args);
 
 
                     case Id_uneval: {
@@ -228,7 +228,7 @@ namespace EcmaScript.NET.Types
         }
 
         /// <summary> The global method parseInt, as per ECMA-262 15.1.2.2.</summary>
-        private object js_parseInt (object [] args)
+        private object ImplParseInt (object [] args)
         {
             string s = ScriptConvert.ToString (args, 0);
             int radix = ScriptConvert.ToInt32 (args, 1);
@@ -294,7 +294,7 @@ namespace EcmaScript.NET.Types
         /// </param>
         /// <param name="funObj">unused
         /// </param>
-        private object js_parseFloat (object [] args)
+        private object ImplParseFloat (object [] args)
         {
             if (args.Length < 1)
                 return double.NaN;
@@ -411,7 +411,7 @@ namespace EcmaScript.NET.Types
         /// for the strange constant names should be directed there.
         /// </summary>
 
-        private object js_escape (object [] args)
+        private object ImplEscape (object [] args)
         {
             const int URL_XALPHAS = 1;
             const int URL_XPALPHAS = 2;
@@ -472,7 +472,7 @@ namespace EcmaScript.NET.Types
 
         /// <summary> The global unescape method, as per ECMA-262 15.1.2.5.</summary>
 
-        private object js_unescape (object [] args)
+        private object ImplUnescape (object [] args)
         {
             string s = ScriptConvert.ToString (args, 0);
             int firstEscapePos = s.IndexOf ((char)'%');
