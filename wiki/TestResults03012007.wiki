@@ -1,4 +1,5 @@
 #summary Test Results for 03.01.2007
+#labels Featured,Phase-QA
 
 == Overview ==
 
@@ -35,4 +36,3 @@
 || ecma || Array || 15.4.5.1-2 || PASSED || 00:00:00.0156250 ||
 || ecma || Array || 15.4.5.2-1 || PASSED || 00:00:00 ||
 || ecma || Array || 15.4.5.2-2 || PASSED || 00:00:00.0781250 ||
-
