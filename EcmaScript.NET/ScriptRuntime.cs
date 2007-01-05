@@ -1056,15 +1056,20 @@ namespace EcmaScript.NET
             return firstXMLObject;
         }
 
-        public static object setName (IScriptable bound, object value, Context cx, IScriptable scope, string id)
+        public static object setName (IScriptable bound, object value, Context cx, IScriptable scope, string id, bool isConst)
         {
             if (bound != null) {
                 if (bound is XMLObject) {
                     XMLObject xmlObject = (XMLObject)bound;
                     xmlObject.EcmaPut (cx, id, value);
                 }
-                else {
-                    ScriptableObject.PutProperty (bound, id, value);
+                else {                    
+                    if (isConst) {
+                        ScriptableObject.DefineProperty (bound, id, value, ScriptableObject.PERMANENT
+                            | ScriptableObject.READONLY);
+                    } else {
+                        ScriptableObject.PutProperty (bound, id, value);
+                    }
                 }
             }
             else {

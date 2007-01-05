@@ -131,19 +131,23 @@ namespace EcmaScript.NET.Types.Cli
                 cliObject = null; // don't need an object
             }
             else {
-                IScriptable o = thisObj;
-                Type c = meth.DeclaringType;
-                for (; ; ) {
-                    if (o == null) {
-                        throw Context.ReportRuntimeErrorById ("msg.nonjava.method", FunctionName, ScriptConvert.ToString (thisObj), c.FullName);
-                    }
-                    if (o is Wrapper) {
-                        cliObject = ((Wrapper)o).Unwrap ();
-                        if (c.IsInstanceOfType (cliObject)) {
-                            break;
+                if (m_Target != null)
+                    cliObject = m_Target;
+                else {
+                    IScriptable o = thisObj;
+                    Type c = meth.DeclaringType;
+                    for (; ; ) {
+                        if (o == null) {
+                            throw Context.ReportRuntimeErrorById ("msg.nonjava.method", FunctionName, ScriptConvert.ToString (thisObj), c.FullName);
                         }
+                        if (o is Wrapper) {
+                            cliObject = ((Wrapper)o).Unwrap ();
+                            if (c.IsInstanceOfType (cliObject)) {
+                                break;
+                            }
+                        }
+                        o = o.GetPrototype ();
                     }
-                    o = o.GetPrototype ();
                 }
             }
 

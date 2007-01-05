@@ -390,7 +390,7 @@ namespace EcmaScript.NET.Types
             }
             s = s.Substring (start, (i) - (start));
             try {
-                return System.Double.Parse (s, BuiltinNumber.NumberFormatter);
+                return double.Parse (s, System.Globalization.CultureInfo.InvariantCulture);
 
             }
             catch (OverflowException) {

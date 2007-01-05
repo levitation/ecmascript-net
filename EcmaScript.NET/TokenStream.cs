@@ -264,7 +264,7 @@ namespace EcmaScript.NET
                         if (toBase == 10 && !isInteger) {
                             try {
                                 // Use Java conversion to number from string...
-                                dval = System.Double.Parse (numString, BuiltinNumber.NumberFormatter);
+                                dval = ScriptConvert.ToNumber (numString);
                             }
                             catch (OverflowException) {
                                 // HACK 
@@ -281,7 +281,7 @@ namespace EcmaScript.NET
                         else {
                             dval = ScriptConvert.ToNumber (numString, 0, toBase);
                         }
-
+                        
                         this.dNumber = dval;
                         return EcmaScript.NET.Token.NUMBER;
                     }
@@ -1122,7 +1122,7 @@ namespace EcmaScript.NET
         private const int Id_catch = EcmaScript.NET.Token.CATCH;
         private const int Id_char = EcmaScript.NET.Token.RESERVED;
         private const int Id_class = EcmaScript.NET.Token.RESERVED;
-        private const int Id_const = EcmaScript.NET.Token.RESERVED;
+        private const int Id_const = EcmaScript.NET.Token.CONST;
         private const int Id_debugger = EcmaScript.NET.Token.RESERVED;
         private const int Id_double = EcmaScript.NET.Token.RESERVED;
         private const int Id_enum = EcmaScript.NET.Token.RESERVED;

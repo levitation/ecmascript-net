@@ -224,6 +224,7 @@ namespace EcmaScript.NET
                             break;
 
 
+                        case Token.CONST:
                         case Token.VAR: {
                                 Node result = new Node (Token.BLOCK);
                                 for (Node cursor = node.FirstChild; cursor != null; ) {
@@ -238,7 +239,7 @@ namespace EcmaScript.NET
                                     Node init = n.FirstChild;
                                     n.removeChild (init);
                                     n.Type = Token.BINDNAME;
-                                    n = new Node (Token.SETNAME, n, init);
+                                    n = new Node ((node.Type == Token.VAR) ? Token.SETNAME : Token.SETNAME_CONST, n, init);
                                     Node pop = new Node (Token.EXPR_VOID, n, node.Lineno);
                                     result.addChildToBack (pop);
                                 }

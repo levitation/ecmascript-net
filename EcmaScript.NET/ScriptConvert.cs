@@ -558,8 +558,9 @@ namespace EcmaScript.NET
             // MS.NET will accept non-conformant strings
             // rather than throwing a NumberFormatException
             // as it should (like with \0).
-            for (int i = sub.Length - 1; i >= 0; i--) {
+            for (int i = 0; i < sub.Length; i++) {
                 char c = sub [i];
+                                
                 if (('0' <= c && c <= '9') || c == '.' ||
                     c == 'e' || c == 'E' ||
                     c == '+' || c == '-')
@@ -568,7 +569,7 @@ namespace EcmaScript.NET
             }
 
             try {
-                double ret = double.Parse (sub);
+                double ret = double.Parse (sub, CultureInfo.InvariantCulture);
                 if (ret == 0) {
                     // IMHO a bug in MS.NET: double.Parse("-0.0") == 0.0 so we retard the "-" sign here
                     if (sub [0] == '-')
@@ -614,45 +615,20 @@ namespace EcmaScript.NET
         /// <summary> Optimized version of toString(Object) for numbers.</summary>
         public static string ToString (double val)
         {
-            return ToString (val, 10);
+            return ToString (val, 10);            
         }
 
+        
         /// <summary>
         /// See ECMA 9.8.1
         /// </summary>
         /// <param name="d"></param>
         /// <param name="toBase"></param>
         /// <returns></returns>
-        public static string ToString (double d, int toBase)
+        public static string ToString (double d, int radix)
         {
-            if (double.IsNaN (d))
-                return "NaN";
-            if (d == System.Double.PositiveInfinity)
-                return "Infinity";
-            if (d == System.Double.NegativeInfinity)
-                return "-Infinity";
-            if (d == 0.0)
-                return "0";
-
-            if ((toBase < 2) || (toBase > 36)) {
-                throw Context.ReportRuntimeErrorById ("msg.bad.radix", Convert.ToString (toBase));
-            }
-
-            if (double.IsNaN (d))
-                return "NaN";
-            else if (Double.IsPositiveInfinity (d))
-                return "Infinity";
-            else if (Double.IsNegativeInfinity (d))
-                return "-Infinity";
-            else {
-                string ret = d.ToString ("g");
-                // TODO: This is plain wrong, but as close as we can get
-                // without converting DtoA to C#.
-                return ret;
-            }
+            return Types.BuiltinNumber.ImplToString (d, radix);
         }
-
-
 
     }
 

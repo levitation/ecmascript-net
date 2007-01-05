@@ -88,7 +88,7 @@ namespace EcmaScript.NET
 
         // Marker to denote the last RC of function so it can be distinguished from
         // the last RC of object literals in case of function expressions		
-        private const int FUNCTION_END = 147;
+        private const int FUNCTION_END = Token.LAST_TOKEN + 1;
 
         internal int MarkFunctionStart (int functionType)
         {

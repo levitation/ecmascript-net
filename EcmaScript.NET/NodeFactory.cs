@@ -147,9 +147,9 @@ namespace EcmaScript.NET
             switchBlock.addChildToBack (switchBreakTarget);
         }
 
-        internal Node CreateVariables (int lineno)
+        internal Node CreateVariables (int lineno, bool isConst)
         {
-            return new Node (Token.VAR, lineno);
+            return new Node ((isConst) ? Token.CONST : Token.VAR, lineno);
         }
 
         internal Node CreateExprStatement (Node expr, int lineno)
@@ -473,7 +473,7 @@ namespace EcmaScript.NET
             id.putProp (Node.LOCAL_BLOCK_PROP, localBlock);
 
             Node newBody = new Node (Token.BLOCK);
-            Node assign = simpleAssignment (lvalue, id);
+            Node assign = simpleAssignment (lvalue, id, false);
             newBody.addChildToBack (new Node (Token.EXPR_VOID, assign));
             newBody.addChildToBack (body);
 
@@ -1158,14 +1158,14 @@ namespace EcmaScript.NET
             return new Node (nodeType, left, right);
         }
 
-        private Node simpleAssignment (Node left, Node right)
+        private Node simpleAssignment (Node left, Node right, bool isConst)
         {
             int nodeType = left.Type;
             switch (nodeType) {
 
                 case Token.NAME:
                     left.Type = Token.BINDNAME;
-                    return new Node (Token.SETNAME, left, right);
+                    return new Node ((isConst) ? Token.SETNAME_CONST : Token.SETNAME, left, right);
 
 
                 case Token.GETPROP:
@@ -1200,7 +1200,7 @@ namespace EcmaScript.NET
             }
         }
 
-        internal Node CreateAssignment (int assignType, Node left, Node right)
+        internal Node CreateAssignment (int assignType, Node left, Node right, bool isConst)
         {
             left = makeReference (left);
             if (left == null) {
@@ -1212,7 +1212,7 @@ namespace EcmaScript.NET
             switch (assignType) {
 
                 case Token.ASSIGN:
-                    return simpleAssignment (left, right);
+                    return simpleAssignment (left, right, isConst);
 
                 case Token.ASSIGN_BITOR:
                     assignOp = Token.BITOR;

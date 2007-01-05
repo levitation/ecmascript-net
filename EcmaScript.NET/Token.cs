@@ -119,9 +119,11 @@ namespace EcmaScript.NET
         public const int REF_NS_NAME = 76; // Reference for ns::y, @ns::y@[y] etc.		
         public const int SETPROP_GETTER = 77;
         public const int SETPROP_SETTER = 78;
+        public const int CONST = 79;
+        public const int SETNAME_CONST = 80;
 
         // End of interpreter bytecodes		
-        public const int LAST_BYTECODE_TOKEN = SETPROP_SETTER;
+        public const int LAST_BYTECODE_TOKEN = 80;
 
         public const int TRY = LAST_BYTECODE_TOKEN + 1;
         public const int SEMI = LAST_BYTECODE_TOKEN + 2;
@@ -197,7 +199,9 @@ namespace EcmaScript.NET
         public const int XMLEND = LAST_BYTECODE_TOKEN + 68;
         public const int TO_OBJECT = LAST_BYTECODE_TOKEN + 69;
         public const int TO_DOUBLE = LAST_BYTECODE_TOKEN + 70;
+        
         public const int LAST_TOKEN = LAST_BYTECODE_TOKEN + 71;
+        
 
 
         public static string name (int token)
