@@ -128,7 +128,7 @@ namespace EcmaScript.NET.Types
         protected internal override void SetInstanceIdValue (int id, object value)
         {
             if (id == Id_length) {
-                setLength (value);
+                SetLength (value);
                 return;
             }
             base.SetInstanceIdValue (id, value);
@@ -434,7 +434,7 @@ namespace EcmaScript.NET.Types
         }
 
 
-        private void setLength (object val)
+        internal void SetLength (object val)
         {
             // TODO do we satisfy this?
             // 15.4.5.1 [[Put]](P, V):

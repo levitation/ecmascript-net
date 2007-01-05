@@ -2782,15 +2782,15 @@ namespace EcmaScript.NET
                                                 valBln = (sDbl [stackTop] == sDbl [stackTop + 1]);
                                             }
                                             else {
-                                                valBln = ScriptRuntime.eqNumber (sDbl [stackTop + 1], lhs);
+                                                valBln = ScriptRuntime.EqualsNumber (sDbl [stackTop + 1], lhs);
                                             }
                                         }
                                         else {
                                             if (lhs == DBL_MRK) {
-                                                valBln = ScriptRuntime.eqNumber (sDbl [stackTop], rhs);
+                                                valBln = ScriptRuntime.EqualsNumber (sDbl [stackTop], rhs);
                                             }
                                             else {
-                                                valBln = ScriptRuntime.eq (lhs, rhs);
+                                                valBln = ScriptRuntime.EqualsObject (lhs, rhs);
                                             }
                                         }
                                         valBln ^= (op == Token.NE);

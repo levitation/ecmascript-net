@@ -1,9 +1,15 @@
 2007-01-05    Christian Birkl <Christian.Birkl at gmail.com>
-    
+        
     * Added 'const' keyword
     * If a CliMethodInfo has an explicit target set use it instead of
       walking the prototype chain to get the real cli object.
     * Added proper NumberToString conversions
+    * RegExp identifier backquote ($`) was not recognized.
+    * Fixed a possible nfe when using regular expressions.
+    * Setting read-only properties in strict mode with warning-as-error turned on
+      will raise now an error.
+    * Fixed mozilla bug #314890
+    * Prepare for 0.2.0
     
 2007-01-02    Christian Birkl <Christian.Birkl at gmail.com>
 

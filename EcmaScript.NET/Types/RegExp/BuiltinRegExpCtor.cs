@@ -123,6 +123,7 @@ namespace EcmaScript.NET.Types.RegExp
 		case '8': if (s[0]=='$') {id=Id_DOLLAR_8; goto EL0;} break;
 		case '9': if (s[0]=='$') {id=Id_DOLLAR_9; goto EL0;} break;
 		case '_': if (s[0]=='$') {id=Id_UNDERSCORE; goto EL0;} break;
+		case '`': if (s[0]=='$') {id=Id_BACK_QUOTE; goto EL0;} break;
 		} break;
 	    case 5: X="input";id=Id_input; break;
 	    case 9: c=s[4];
@@ -130,7 +131,6 @@ namespace EcmaScript.NET.Types.RegExp
 		else if (c=='P') { X="lastParen";id=Id_lastParen; }
 		else if (c=='i') { X="multiline";id=Id_multiline; }
 		break;
-	    case 10: X="BACK_QUOTE";id=Id_BACK_QUOTE; break;
 	    case 11: X="leftContext";id=Id_leftContext; break;
 	    case 12: X="rightContext";id=Id_rightContext; break;
 	    }

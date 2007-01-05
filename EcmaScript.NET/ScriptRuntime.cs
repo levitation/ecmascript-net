@@ -1658,7 +1658,7 @@ namespace EcmaScript.NET
         /// 
         /// See ECMA 11.9
         /// </summary>
-        public static bool eq (object x, object y)
+        public static bool EqualsObject (object x, object y)
         {
             if (x == null || x == Undefined.Value) {
                 if (y == null || y == Undefined.Value) {
@@ -1673,10 +1673,10 @@ namespace EcmaScript.NET
                 return false;
             }
             else if (CliHelper.IsNumber (x)) {
-                return eqNumber (Convert.ToDouble (x), y);
+                return EqualsNumber (Convert.ToDouble (x), y);
             }
             else if (x is string) {
-                return eqString ((string)x, y);
+                return EqualsString ((string)x, y);
             }
             else if (x is bool) {
                 bool b = ((bool)x);
@@ -1689,7 +1689,7 @@ namespace EcmaScript.NET
                         return ((bool)test);
                     }
                 }
-                return eqNumber (b ? 1.0 : 0.0, y);
+                return EqualsNumber (b ? 1.0 : 0.0, y);
             }
             else if (x is IScriptable) {
                 if (y is IScriptable) {
@@ -1721,13 +1721,13 @@ namespace EcmaScript.NET
                         }
                     }
                     double d = ((bool)y) ? 1.0 : 0.0;
-                    return eqNumber (d, x);
+                    return EqualsNumber (d, x);
                 }
                 else if (CliHelper.IsNumber (y)) {
-                    return eqNumber (Convert.ToDouble (y), x);
+                    return EqualsNumber (Convert.ToDouble (y), x);
                 }
                 else if (y is string) {
-                    return eqString ((string)y, x);
+                    return EqualsString ((string)y, x);
                 }
                 // covers the case when y == Undefined.instance as well
                 return false;
@@ -1738,7 +1738,7 @@ namespace EcmaScript.NET
             }
         }
 
-        internal static bool eqNumber (double x, object y)
+        internal static bool EqualsNumber (double x, object y)
         {
             for (; ; ) {
                 if (y == null || y == Undefined.Value) {
@@ -1770,14 +1770,14 @@ namespace EcmaScript.NET
             }
         }
 
-        private static bool eqString (string x, object y)
+        private static bool EqualsString (string x, object y)
         {
             for (; ; ) {
                 if (y == null || y == Undefined.Value) {
                     return false;
                 }
                 else if (y is string) {
-                    return x.Equals (y);
+                    return (object)x == y || x.Equals (y);
                 }
                 else if (CliHelper.IsNumber (y)) {
                     return ScriptConvert.ToNumber (x) == Convert.ToDouble (y);
@@ -2286,8 +2286,8 @@ namespace EcmaScript.NET
             * set length property manually.
             */
             if (cx.Version == Context.Versions.JS1_2) {
-                arrayObj = cx.NewObject (scope, "Array", ScriptRuntime.EmptyArgs);
-                ScriptableObject.PutProperty (arrayObj, "length", (object)lengthObj);
+                arrayObj = cx.NewObject (scope, "Array", ScriptRuntime.EmptyArgs);                
+                ((BuiltinArray)arrayObj).SetLength (lengthObj);                
             }
             else {
                 arrayObj = cx.NewObject (scope, "Array", new object [] { lengthObj });

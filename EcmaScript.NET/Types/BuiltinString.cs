@@ -453,7 +453,7 @@ namespace EcmaScript.NET.Types
                         else {
                             actionType = EcmaScript.NET.RegExpActions.Replace;
                         }
-                        return cx.regExpProxy.Perform (cx, scope, thisObj, args, actionType);
+                        return cx.RegExpProxy.Perform (cx, scope, thisObj, args, actionType);
                     }
             }
             throw new ArgumentException (Convert.ToString (id));

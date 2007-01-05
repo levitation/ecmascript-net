@@ -309,7 +309,7 @@ namespace EcmaScript.NET.Types
                     return double.NaN;
                 }
                 c = s [start];
-                if (!TokenStream.isJSSpace (c)) {
+                if (!TokenStream.IsJsSpace (c)) {
                     break;
                 }
                 ++start;

@@ -398,7 +398,10 @@ namespace EcmaScript.NET
                 int functionSourceStart = decompiler.MarkFunctionStart (functionType);
                 string name;
                 Node memberExprNode = null;
-                if (matchToken (Token.NAME)) {
+                
+                int tt = peekToken ();                
+                if (tt == Token.NAME) {
+                    consumeToken ();    
                     name = ts.String;
                     decompiler.AddName (name);
                     if (!matchToken (Token.LP)) {
@@ -495,7 +498,7 @@ namespace EcmaScript.NET
                             // the check is done only if language is
                             // explicitly set.
                             //  TODO: warning needed if version == VERSION_DEFAULT ?
-                            int tt = peekTokenOrEOL ();
+                            tt = peekTokenOrEOL ();
                             if (tt == Token.FUNCTION) {
                                 ReportError ("msg.no.semi.stmt");
                             }
