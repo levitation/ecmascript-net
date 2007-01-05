@@ -1,3 +1,10 @@
+2007-01-05    Christian Birkl <Christian.Birkl at gmail.com>
+    
+    * Added 'const' keyword
+    * If a CliMethodInfo has an explicit target set use it instead of
+      walking the prototype chain to get the real cli object.
+    * Added proper NumberToString conversions
+    
 2007-01-02    Christian Birkl <Christian.Birkl at gmail.com>
 
     * Checked in to code.google.com

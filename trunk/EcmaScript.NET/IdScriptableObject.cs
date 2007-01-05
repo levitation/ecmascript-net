@@ -393,6 +393,7 @@ namespace EcmaScript.NET
                         return start.Put (name, start, value);
                     }
                 }
+                ReadOnlyPropertyChanged (name);
                 return value;
             }
             if (prototypeValues != null) {

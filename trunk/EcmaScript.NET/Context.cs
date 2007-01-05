@@ -181,6 +181,8 @@ namespace EcmaScript.NET
             /// The famous 'it' object (@see js.c:2315)
             /// </summary>
             NonEcmaItObject = 1 << 15,
+            
+            WarningAsError = 1 << 16
 
         }
 
@@ -911,9 +913,12 @@ namespace EcmaScript.NET
         /// </param>
 
         public static void ReportWarning (string message, string sourceName, int lineno, string lineSource, int lineOffset)
-        {
+        {            
             Context cx = Context.CurrentContext;
-            cx.ErrorReporter.Warning (message, sourceName, lineno, lineSource, lineOffset);
+            if (cx.HasFeature (Features.WarningAsError))
+                ReportError (message, sourceName, lineno, lineSource, lineOffset);
+            else
+                cx.ErrorReporter.Warning (message, sourceName, lineno, lineSource, lineOffset);
         }
 
         public static void ReportWarningById (string messageId, params string [] arguments)

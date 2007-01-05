@@ -13,24 +13,19 @@
 
 
 using System;
+using System.Text;
 using System.Globalization;
 
 namespace EcmaScript.NET.Types
 {
 
-    /// <summary> This class implements the Number native object.
+    /// <summary>
+    /// This class implements the Number native object.
     /// 
     /// See ECMA 15.7.
-    /// 
     /// </summary>
     sealed class BuiltinNumber : IdScriptableObject
     {
-
-        internal const int DTOSTR_STANDARD = 0;
-        internal const int DTOSTR_STANDARD_EXPONENTIAL = 1;
-        internal const int DTOSTR_FIXED = 2;
-        internal const int DTOSTR_EXPONENTIAL = 3;
-        internal const int DTOSTR_PRECISION = 4; /* Either fixed or exponential format; <precision> significant digits */
 
         public const double NaN = double.NaN;
 
@@ -147,20 +142,12 @@ namespace EcmaScript.NET.Types
                 throw IncompatibleCallError (f);
             double value = nativeNumber.doubleValue;
 
-            int toBase = 0;
             switch (id) {
 
 
+                case Id_toLocaleString:
                 case Id_toString:
-                    toBase = (args.Length == 0) ? 10 : ScriptConvert.ToInt32 (args [0]);
-                    return ScriptConvert.ToString (value, toBase);
-
-                case Id_toLocaleString: {
-                        // toLocaleString is just an alias for toString for now
-                        toBase = (args.Length == 0) ? 10 : ScriptConvert.ToInt32 (args [0]);
-                        return ScriptConvert.ToString (value, toBase);
-                    }
-
+                    return ImplToString (value, args);
 
                 case Id_toSource:
                     return "(new Number(" + ScriptConvert.ToString (value) + "))";
@@ -171,24 +158,15 @@ namespace EcmaScript.NET.Types
 
 
                 case Id_toFixed:
-                    return num_to (value, args, DTOSTR_FIXED, DTOSTR_FIXED, -20, 0);
+                    return ImplToFixed (value, args);
 
 
                 case Id_toExponential:
-                    return num_to (value, args, DTOSTR_STANDARD_EXPONENTIAL, DTOSTR_EXPONENTIAL, 0, 1);
+                    return ImplToExponential (value, args);
 
 
-                case Id_toPrecision: {
-                        if (args.Length < 0 || args [0] == Undefined.Value)
-                            return ScriptConvert.ToString (value);
-                        int precision = ScriptConvert.ToInt32 (args [0]);
-                        if (precision < 0 || precision > MAX_PRECISION) {
-                            throw ScriptRuntime.ConstructError ("RangeError",
-                                ScriptRuntime.GetMessage ("msg.bad.precision", ScriptConvert.ToString (args [0])));
-                        }
-                        return value.ToString (GetFormatString (precision));
-                    }
-
+                case Id_toPrecision:
+                    return ImplToPrecision (value, args);
 
                 default:
                     throw new ArgumentException (Convert.ToString (id));
@@ -196,67 +174,181 @@ namespace EcmaScript.NET.Types
             }
         }
 
+        internal static string ImplToString (double value, object [] args)
+        {
+            int radix = (args == null || args.Length == 0) ? 10 : ScriptConvert.ToInt32 (args [0]);
+            return ImplToString (value, radix);
+        }
+
+        internal static string ImplToString (double d, int radix)
+        {
+            string ret = HandleSpecialDoubles (d);
+            if (ret != null)
+                return ret;
+
+            AssertValidRadix (radix);
+
+            // Format 'g' is pretty close what we want but it has the following drawbacks
+            //  - if exponent is greater than 15 .NET switches to exponential formatting
+            //    while ecma wants normal formatting
+            //  - if exponent is smaller than -5 .NET switches to exponential formatting
+            //    while ecma wants normal formatting
+            //  - 'g' pads the exponent with a zero if length is lesser than 10. So we
+            //    remove it.            
+            int exponent = GetExponent (d);
+
+            if ((exponent >= 15 && exponent < 21)) {
+                string tmp = d.ToString ("e" + (exponent + 1));
+                tmp = tmp.Replace (".", "");
+                tmp = tmp.Substring (0, tmp.Length - 6);
+                return tmp;
+            }
+            else if (exponent <= -5 && exponent > -7) {
+                string tmp = d.ToString ("f21");
+                tmp = tmp.TrimEnd ('0');
+                tmp = tmp.TrimEnd ('.');
+                return tmp;
+            }
+            else if (exponent <= -7 && exponent > -10) {
+                string tmp = d.ToString ("g");
+                tmp = tmp.Substring (0, tmp.Length - 2) + tmp [tmp.Length - 1];
+                return tmp;
+            }
+
+            return d.ToString ("g");
+        }
+
+        static object ImplToFixed (double value, object [] args)
+        {
+            if (args.Length < 1)
+                return ImplToString (value, args);
+
+            string ret = HandleSpecialDoubles (value);
+            if (ret == null) {
+                // Fixed-Point Format : Used for strings in the following form: 
+                // "[-]m.dd...d" 
+                ret = value.ToString ("f" + GetPrecision (args [0]));
+            }
+            return ret;
+        }
+
+        internal static int GetPrecision (object arg)
+        {
+            int precision = ScriptConvert.ToInt32 (arg);
+            AssertValidPrecision (precision);
+            return precision;
+        }
+    
+        internal static int GetNoOfDecimals (double value)
+        {
+            string str = value.ToString ("e23", CultureInfo.InvariantCulture);
+            int idxOfSep = str.IndexOfAny (new char[] { '.', 'e' });
+            if (idxOfSep == -1)
+                idxOfSep = str.Length;
+            return idxOfSep;                
+        }
+        
+        internal static int GetExponent (double value)
+        {
+            if (value == 0.0)
+                return 0;
+
+            value = Math.Abs (value);
+            int exponent = 0;
+            if (value >= 1.0) {
+                while (value >= 10.0) {
+                    exponent++;
+                    value /= 10.0;
+                }
+            }
+            else {
+                while (value <= 1.0) {
+                    exponent--;
+                    value *= 10.0;
+                }
+            }
+            return exponent;
+        }
+
+
+        internal static int AssertValidPrecision (int precision)
+        {
+            if (precision < 0 || precision > MAX_PRECISION) {
+                string msg = ScriptRuntime.GetMessage ("msg.bad.precision", ScriptConvert.ToString (precision));
+                throw ScriptRuntime.ConstructError ("RangeError", msg);
+            }
+            return precision;
+        }
+
+        internal static int AssertValidRadix (int radix)
+        {
+            if ((radix < 2) || (radix > 36)) {
+                throw Context.ReportRuntimeErrorById ("msg.bad.radix", Convert.ToString (radix));
+            }
+            if (radix != 10)
+                throw new NotImplementedException ("Radix beside 10 is not implemented.");
+            return radix;
+        }
+
+        internal static string HandleSpecialDoubles (double d)
+        {
+            if (double.IsNaN (d))
+                return "NaN";
+            if (d == System.Double.PositiveInfinity)
+                return "Infinity";
+            if (d == System.Double.NegativeInfinity)
+                return "-Infinity";
+            if (d == 0.0)
+                return "0";
+            return null;
+        }
+
+        static string ImplToExponential (double value, object [] args)
+        {
+            int prec = 16;
+            if (args.Length > 0)
+                prec = GetPrecision (args [0]);
+            return ImplToExponential (value, prec);
+        }
+
+        static string ImplToExponential (double value, int precision)
+        {
+            string ret = HandleSpecialDoubles (value);
+            if (ret == null) {
+                ret = value.ToString (GetFormatString (precision) + "e+0", CultureInfo.InvariantCulture);
+            }
+            return ret;
+        }
+
         static string GetFormatString (int precision)
         {
-            string formatString = "0.";
+            // TODO: Cache those format strings?
+            string formatString = "#.";
             for (int i = 0; i < precision; i++)
-                formatString += "#";
+                formatString += "0";
             return formatString;
+        }
+
+        private object ImplToPrecision (double value, object [] args)
+        {
+            string ret = HandleSpecialDoubles (value);
+            if (ret == null) {
+                if (args.Length == 0)
+                    return ImplToString (value, args);
+                int prec = GetPrecision (args [0]);
+                AssertValidPrecision (prec);
+                int noOfDecimals = GetNoOfDecimals (value);                        
+                prec = prec - noOfDecimals;        
+                if (prec < 1)
+                    prec = 1;                    
+                ret = value.ToString ("f" + prec, CultureInfo.InvariantCulture);
+            }            
+            return ret;
         }
 
         public override string ToString ()
         {
-            return ScriptConvert.ToString (doubleValue, 10);
-        }
-
-        private static NumberFormatInfo m_NumberFormatter = null;
-        public static NumberFormatInfo NumberFormatter
-        {
-            get
-            {
-                if (m_NumberFormatter == null) {
-                    m_NumberFormatter = new NumberFormatInfo ();
-                    m_NumberFormatter.PercentGroupSeparator = ",";
-                    m_NumberFormatter.NumberDecimalSeparator = ".";
-                }
-                return m_NumberFormatter;
-            }
-        }
-
-        private static string num_to (double val, object [] args, int zeroArgMode, int oneArgMode, int precisionMin, int precisionOffset)
-        {
-            int precision;
-            if (args.Length == 0) {
-                precision = 0;
-                oneArgMode = zeroArgMode;
-            }
-            else {
-                /* We allow a larger range of precision than
-                ECMA requires; this is permitted by ECMA. */
-                precision = ScriptConvert.ToInt32 (args [0]);
-                if (precision < precisionMin || precision > MAX_PRECISION) {
-                    string msg = ScriptRuntime.GetMessage ("msg.bad.precision", ScriptConvert.ToString (args [0]));
-                    throw ScriptRuntime.ConstructError ("RangeError", msg);
-                }
-            }
-
-
-            switch (zeroArgMode) {
-                case DTOSTR_FIXED:
-                    return val.ToString ("F" + (precision + precisionOffset), NumberFormatter);
-                case DTOSTR_STANDARD_EXPONENTIAL:
-                    return val.ToString ("e" + (precision + precisionOffset), NumberFormatter);
-                case DTOSTR_STANDARD:
-                    if (oneArgMode == DTOSTR_PRECISION) {
-                        return val.ToString (precision.ToString (), NumberFormatter);
-                    }
-                    else {
-                        return val.ToString (NumberFormatter);
-                    }
-            }
-
-            Context.CodeBug ();
-            return string.Empty; // Not reached
+            return ImplToString (doubleValue, 10);
         }
 
         protected internal override int FindPrototypeId (string s)

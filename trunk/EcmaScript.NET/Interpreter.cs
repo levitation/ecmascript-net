@@ -1156,13 +1156,13 @@ namespace EcmaScript.NET
                     stackChange (-1);
                     break;
 
-
+                case Token.SETNAME_CONST:
                 case Token.SETNAME: {
                         string name = child.String;
                         VisitExpression (child, 0);
                         child = child.Next;
                         VisitExpression (child, 0);
-                        addStringOp (Token.SETNAME, name);
+                        addStringOp (node.Type, name);
                         stackChange (-1);
                     }
                     break;
@@ -3117,13 +3117,14 @@ namespace EcmaScript.NET
                                     goto Loop;
                                     goto case Token.SETNAME;
 
+                                case Token.SETNAME_CONST:
                                 case Token.SETNAME: {
                                         object rhs = stack [stackTop];
                                         if (rhs == DBL_MRK)
                                             rhs = sDbl [stackTop];
                                         --stackTop;
                                         IScriptable lhs = (IScriptable)stack [stackTop];
-                                        stack [stackTop] = ScriptRuntime.setName (lhs, rhs, cx, frame.scope, stringReg);
+                                        stack [stackTop] = ScriptRuntime.setName (lhs, rhs, cx, frame.scope, stringReg, (op == Token.SETNAME_CONST));
 
                                         goto Loop;
                                     }
@@ -4315,7 +4316,7 @@ namespace EcmaScript.NET
                 if (throwable is Helpers.StackOverflowVerifierException) {
                     throw Context.ReportRuntimeError (
                         ScriptRuntime.GetMessage ("mag.too.deep.parser.recursion"));
-                }
+                }                                
                 throw (Exception)throwable;                
             }
 

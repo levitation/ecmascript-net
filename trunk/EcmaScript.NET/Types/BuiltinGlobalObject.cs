@@ -39,9 +39,33 @@ namespace EcmaScript.NET.Types
                     }
                     return (int)cx.Version;
                 case Id_options:
+                    if (args.Length > 0) {
+                        foreach (object arg in args) {
+                            foreach (string opt in ScriptConvert.ToString (arg).Split (',')) {
+                                switch (opt) {
+                                    case "werror":
+                                        cx.SetFeature (Context.Features.WarningAsError, 
+                                            !cx.HasFeature (Context.Features.WarningAsError));
+                                        break;
+                                    case "strict":
+                                        cx.SetFeature (Context.Features.Strict,
+                                            !cx.HasFeature (Context.Features.Strict));
+                                        break;
+                                }
+                            }
+                        }
+                    }
                     StringBuilder sb = new StringBuilder ();
-                    if (cx.HasFeature (Context.Features.Strict))
+                    if (cx.HasFeature (Context.Features.Strict)) {
+                        if (sb.Length > 0)
+                            sb.Append (",");
                         sb.Append ("strict");
+                    }
+                    if (cx.HasFeature (Context.Features.WarningAsError)) {
+                        if (sb.Length > 0)
+                            sb.Append (",");
+                        sb.Append ("werror");
+                    }
                     return sb.ToString ();
                 case Id_gc:
                     GC.Collect ();
@@ -56,13 +80,13 @@ namespace EcmaScript.NET.Types
             string s;
             int arity;
             switch (id) {
-                case Id_print:                    
+                case Id_print:
                     arity = 0;
-                    s = "print";                    
+                    s = "print";
                     break;
-                case Id_version:                    
+                case Id_version:
                     arity = 0;
-                    s = "version";                    
+                    s = "version";
                     break;
                 case Id_options:
                     arity = 0;
@@ -76,8 +100,8 @@ namespace EcmaScript.NET.Types
                     throw new ArgumentException (Convert.ToString (id));
 
             }
-            
-            InitPrototypeMethod (GLOBALOBJECT_TAG, id, s, arity);               
+
+            InitPrototypeMethod (GLOBALOBJECT_TAG, id, s, arity);
         }
 
         internal override object [] GetIds (bool getAll)
@@ -116,18 +140,19 @@ namespace EcmaScript.NET.Types
             #endregion
 
             //id = HideIfNotSet (id);
-            
+
             return id;
         }
-        
-        int HideIfNotSet (int id) {
+
+        int HideIfNotSet (int id)
+        {
             id = HideIfNotSet (Context.Features.NonEcmaPrintFunction, id, Id_print);
             id = HideIfNotSet (Context.Features.NonEcmaOptionsFunction, id, Id_options);
             id = HideIfNotSet (Context.Features.NonEcmaVersionFunction, id, Id_version);
             id = HideIfNotSet (Context.Features.NonEcmaGcFunction, id, Id_gc);
-            return id;        
+            return id;
         }
-        
+
         int HideIfNotSet (Context.Features feature, int id, int requiredId)
         {
             if (id != requiredId)

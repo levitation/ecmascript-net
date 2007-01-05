@@ -520,7 +520,7 @@ namespace EcmaScript.NET
 
                 Node pn = nf.initFunction (fnNode, functionIndex, body, syntheticType);
                 if (memberExprNode != null) {
-                    pn = nf.CreateAssignment (Token.ASSIGN, memberExprNode, pn);
+                    pn = nf.CreateAssignment (Token.ASSIGN, memberExprNode, pn, false);
                     if (functionType != FunctionNode.FUNCTION_EXPRESSION) {
                         // TOOD: check JScript behavior: should it be createExprStatement?
                         pn = nf.CreateExprStatementNoReturn (pn, baseLineno);
@@ -797,10 +797,10 @@ namespace EcmaScript.NET
                                 init = nf.CreateLeaf (Token.EMPTY);
                             }
                             else {
-                                if (tt == Token.VAR) {
+                                if (tt == Token.VAR || tt == Token.CONST) {
                                     // set init to a var list or initial
                                     consumeToken (); // consume the 'var' token
-                                    init = variables (true);
+                                    init = Variables (true, (tt == Token.CONST));
                                 }
                                 else {
                                     init = expr (true);
@@ -1014,9 +1014,10 @@ namespace EcmaScript.NET
                     }
 
 
+                case Token.CONST:
                 case Token.VAR: {
                         consumeToken ();
-                        pn = variables (false);
+                        pn = Variables (false, tt == Token.CONST);
                         break;
                     }
 
@@ -1185,8 +1186,6 @@ namespace EcmaScript.NET
 
             }
 
-            // FINDME
-
             int ttFlagged = peekFlaggedToken ();
             switch (ttFlagged & CLEAR_TI_MASK) {
 
@@ -1213,13 +1212,13 @@ namespace EcmaScript.NET
 
             return pn;
         }
-
-        Node variables (bool inForInit)
+        
+        Node Variables (bool inForInit, bool isConst)
         {
-            Node pn = nf.CreateVariables (ts.Lineno);
+            Node pn = nf.CreateVariables (ts.Lineno, isConst);
             bool first = true;
-
-            decompiler.AddToken (Token.VAR);
+            
+            decompiler.AddToken (isConst ? Token.CONST : Token.VAR);
 
             for (; ; ) {
                 Node name;
@@ -1240,7 +1239,7 @@ namespace EcmaScript.NET
                 if (matchToken (Token.ASSIGN)) {
                     decompiler.AddToken (Token.ASSIGN);
 
-                    init = assignExpr (inForInit);
+                    init = assignExpr (inForInit, isConst);
                     nf.addChildToBack (name, init);
                 }
                 nf.addChildToBack (pn, name);
@@ -1262,13 +1261,18 @@ namespace EcmaScript.NET
 
         Node assignExpr (bool inForInit)
         {
+            return assignExpr (inForInit, false);
+        }
+        
+        Node assignExpr (bool inForInit, bool isConst)
+        {
             Node pn = condExpr (inForInit);
 
             int tt = peekToken ();
             if (Token.FIRST_ASSIGN <= tt && tt <= Token.LAST_ASSIGN) {
                 consumeToken ();
                 decompiler.AddToken (tt);
-                pn = nf.CreateAssignment (tt, pn, assignExpr (inForInit));
+                pn = nf.CreateAssignment (tt, pn, assignExpr (inForInit, isConst), isConst);
             }
 
             return pn;

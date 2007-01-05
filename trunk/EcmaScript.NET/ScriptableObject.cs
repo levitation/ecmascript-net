@@ -36,7 +36,8 @@ namespace EcmaScript.NET
     /// </summary>    
     public abstract class ScriptableObject : IScriptable, DebuggableObject
     {
-        /// <summary> Return the name of the class.
+        /// <summary>
+        /// Return the name of the class.
         /// 
         /// This is typically the same name as the constructor.
         /// Classes extending ScriptableObject must implement this abstract
@@ -244,15 +245,7 @@ namespace EcmaScript.NET
                 throw Context.ReportRuntimeErrorById ("msg.modify.sealed", name);
             }
             if ((slot.attributes & ScriptableObject.READONLY) != 0) {
-                // FINDME                
-                Context cx = Context.CurrentContext;
-                if (cx.Version == Context.Versions.JS1_2) {
-                    throw Context.ReportRuntimeErrorById ("msg.read-only", name);
-                } else {
-                    if (cx.HasFeature (Context.Features.Strict)) {
-                        Context.ReportWarningById ("msg.read-only", name);                        
-                    }
-                }
+                ReadOnlyPropertyChanged (name);
                 return value;
             }
             if (this == start) {
@@ -269,6 +262,20 @@ namespace EcmaScript.NET
                 }
             }
             return value;
+        }
+
+        protected static void ReadOnlyPropertyChanged (string name)
+        {     
+            //TODO       
+            //Context cx = Context.CurrentContext;
+            //if (cx.Version == Context.Versions.JS1_2) {
+            //    throw Context.ReportRuntimeErrorById ("msg.read-only", name);
+            //}
+            //else {
+            //    if (cx.HasFeature (Context.Features.Strict)) {
+            //        Context.ReportWarningById ("msg.read-only", name);
+            //    }
+            //}
         }
 
         /// <summary> Sets the value of the indexed property, creating it if need be.

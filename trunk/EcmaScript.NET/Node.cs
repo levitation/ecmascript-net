@@ -177,7 +177,7 @@ namespace EcmaScript.NET
 
             internal string str;
         }
-
+        
         public class Jump : Node
         {
             public Jump JumpStatement
@@ -324,25 +324,22 @@ namespace EcmaScript.NET
             Type = nodeType;
         }
 
-        public Node (int nodeType, Node child)
-        {
-            Type = nodeType;
+        public Node (int nodeType, Node child) : this (nodeType)
+        {            
             first = last = child;
             child.next = null;
         }
 
-        public Node (int nodeType, Node left, Node right)
-        {
-            Type = nodeType;
+        public Node (int nodeType, Node left, Node right) : this (nodeType)
+        {            
             first = left;
             last = right;
             left.next = right;
             right.next = null;
         }
 
-        public Node (int nodeType, Node left, Node mid, Node right)
-        {
-            Type = nodeType;
+        public Node (int nodeType, Node left, Node mid, Node right) : this (nodeType)
+        {            
             first = left;
             last = right;
             left.next = mid;
@@ -350,9 +347,8 @@ namespace EcmaScript.NET
             right.next = null;
         }
 
-        public Node (int nodeType, int line)
-        {
-            Type = nodeType;
+        public Node (int nodeType, int line) : this (nodeType)
+        {            
             lineno = line;
         }
 

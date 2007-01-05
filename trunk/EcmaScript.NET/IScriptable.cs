@@ -34,7 +34,8 @@ namespace EcmaScript.NET
     public interface IScriptable
     {
 
-        /// <summary> Get the name of the set of objects implemented by this Java class.
+        /// <summary>
+        /// Get the name of the set of objects implemented by this Java class.
         /// This corresponds to the [[Class]] operation in ECMA and is used
         /// by Object.prototype.toString() in ECMA.<p>
         /// See ECMA 8.6.2 and 15.2.4.2.
