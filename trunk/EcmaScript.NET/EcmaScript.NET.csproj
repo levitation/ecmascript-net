@@ -336,6 +336,7 @@
     <None Include="Resources\LICENSE" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="EcmaScript.NET.build" />
     <None Include="EcmaScript.NET.snk" />
     <None Include="Resources\TODO" />
   </ItemGroup>

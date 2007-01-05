@@ -71,7 +71,7 @@ namespace EcmaScript.NET
                             dirtyLine = false;
                             return EcmaScript.NET.Token.EOL;
                         }
-                        else if (!isJSSpace (c)) {
+                        else if (!IsJsSpace (c)) {
                             if (c != '-') {
                                 dirtyLine = true;
                             }
@@ -161,9 +161,6 @@ namespace EcmaScript.NET
 
                         string str = StringFromBuffer;
                         if (!containsEscape) {
-                            // OPT we shouldn't have to make a string (object!) to
-                            // check if it's a keyword.
-
                             // Return the corresponding token if it's a keyword
                             int result = stringToKeyword (str);
                             if (result != EcmaScript.NET.Token.EOF) {
@@ -186,7 +183,7 @@ namespace EcmaScript.NET
                     }
 
                     // is it a number?
-                    if (isDigit (c) || (c == '.' && isDigit (peekChar ()))) {
+                    if (IsDigit (c) || (c == '.' && IsDigit (peekChar ()))) {
 
                         stringBufferTop = 0;
                         int toBase = 10;
@@ -197,7 +194,7 @@ namespace EcmaScript.NET
                                 toBase = 16;
                                 c = Char;
                             }
-                            else if (isDigit (c)) {
+                            else if (IsDigit (c)) {
                                 toBase = 8;
                             }
                             else {
@@ -237,7 +234,7 @@ namespace EcmaScript.NET
                                     addToString (c);
                                     c = Char;
                                 }
-                                while (isDigit (c));
+                                while (IsDigit (c));
                             }
                             if (c == 'e' || c == 'E') {
                                 addToString (c);
@@ -246,7 +243,7 @@ namespace EcmaScript.NET
                                     addToString (c);
                                     c = Char;
                                 }
-                                if (!isDigit (c)) {
+                                if (!IsDigit (c)) {
                                     parser.AddError ("msg.missing.exponent");
                                     return EcmaScript.NET.Token.ERROR;
                                 }
@@ -254,7 +251,7 @@ namespace EcmaScript.NET
                                     addToString (c);
                                     c = Char;
                                 }
-                                while (isDigit (c));
+                                while (IsDigit (c));
                             }
                         }
                         ungetChar (c);
@@ -281,7 +278,7 @@ namespace EcmaScript.NET
                         else {
                             dval = ScriptConvert.ToNumber (numString, 0, toBase);
                         }
-                        
+
                         this.dNumber = dval;
                         return EcmaScript.NET.Token.NUMBER;
                     }
@@ -952,7 +949,7 @@ namespace EcmaScript.NET
                         }
                     }
                     else {
-                        if (isJSFormatChar (c)) {
+                        if (IsJsFormatChar (c)) {
                             continue;
                         }
                         if (ScriptRuntime.isJSLineTerminator (c)) {
@@ -1405,7 +1402,7 @@ namespace EcmaScript.NET
             return hitEOF;
         }
 
-        private static bool isAlpha (int c)
+        private static bool IsAlpha (int c)
         {
             // Use 'Z' < 'a'
             if (c <= 'Z') {
@@ -1416,7 +1413,7 @@ namespace EcmaScript.NET
             }
         }
 
-        internal static bool isDigit (int c)
+        internal static bool IsDigit (int c)
         {
             return '0' <= c && c <= '9';
         }
@@ -1426,7 +1423,7 @@ namespace EcmaScript.NET
         * '\r' == 
         as well.
         */
-        internal static bool isJSSpace (int c)
+        internal static bool IsJsSpace (int c)
         {
             if (c <= 127) {
                 return c == 0x20 || c == 0x9 || c == 0xC || c == 0xB;
@@ -1436,7 +1433,7 @@ namespace EcmaScript.NET
             }
         }
 
-        private static bool isJSFormatChar (int c)
+        private static bool IsJsFormatChar (int c)
         {
             return c > 127 && (int)char.GetUnicodeCategory ((char)c) == (sbyte)System.Globalization.UnicodeCategory.Format;
         }
@@ -1490,7 +1487,7 @@ namespace EcmaScript.NET
                     break;
             }
 
-            if (isAlpha (peekChar ())) {
+            if (IsAlpha (peekChar ())) {
                 throw parser.ReportError ("msg.invalid.re.flag");
             }
 

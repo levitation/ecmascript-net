@@ -61,7 +61,7 @@ namespace EcmaScript.NET.Types
         internal static new void Init (IScriptable scope, bool zealed)
         {
             BuiltinScript obj = new BuiltinScript (null);
-            obj.ExportAsJSClass (MAX_PROTOTYPE_ID, scope, zealed);
+            obj.ExportAsJSClass (MAX_PROTOTYPE_ID, scope, zealed, ScriptableObject.DONTENUM | ScriptableObject.READONLY | ScriptableObject.PERMANENT);
         }
 
         private BuiltinScript (IScript script)
@@ -141,6 +141,9 @@ namespace EcmaScript.NET.Types
 
 
                 case Id_toString: {
+                        if (thisObj is BuiltinFunction)
+                            return ((BuiltinFunction)thisObj).Decompile (0, 0);
+                            
                         BuiltinScript real = realThis (thisObj, f);
                         IScript realScript = real.script;
                         if (realScript == null) {

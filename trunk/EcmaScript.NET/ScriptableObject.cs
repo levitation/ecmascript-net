@@ -102,24 +102,24 @@ namespace EcmaScript.NET
         /// Used by getAttributes() and setAttributes().
         /// 
         /// </summary>        
-        public const int EMPTY = 0x00;
+        public const int EMPTY = 1 << 1;
 
         /// <summary> Property attribute indicating assignment to this property is ignored.
         /// 
         /// </summary>        
-        public const int READONLY = 0x01;
+        public const int READONLY = 1 << 2;
 
         /// <summary> Property attribute indicating property is not enumerated.
         /// 
         /// Only enumerated properties will be returned by getIds().
         /// 
         /// </summary>        
-        public const int DONTENUM = 0x02;
+        public const int DONTENUM = 1 << 3;
 
         /// <summary> Property attribute indicating property cannot be deleted.
         /// 
         /// </summary>        
-        public const int PERMANENT = 0x04;
+        public const int PERMANENT = 1 << 4;
 
         internal static void CheckValidAttributes (int attributes)
         {
@@ -265,17 +265,16 @@ namespace EcmaScript.NET
         }
 
         protected static void ReadOnlyPropertyChanged (string name)
-        {     
-            //TODO       
-            //Context cx = Context.CurrentContext;
-            //if (cx.Version == Context.Versions.JS1_2) {
-            //    throw Context.ReportRuntimeErrorById ("msg.read-only", name);
-            //}
-            //else {
-            //    if (cx.HasFeature (Context.Features.Strict)) {
-            //        Context.ReportWarningById ("msg.read-only", name);
-            //    }
-            //}
+        {            
+            Context cx = Context.CurrentContext;
+            if (cx.Version == Context.Versions.JS1_2) {
+                throw Context.ReportRuntimeErrorById ("msg.read-only", name);
+            }
+            else {
+                if (cx.HasFeature (Context.Features.Strict)) {
+                    Context.ReportWarningById ("msg.read-only", name);
+                }
+            }
         }
 
         /// <summary> Sets the value of the indexed property, creating it if need be.

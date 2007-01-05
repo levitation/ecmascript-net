@@ -95,7 +95,8 @@ namespace EcmaScript.NET
             /// </summary>
             MemberExprAsFunctionName = 1 << 5,
 
-            /// <summary> Control if reserved keywords are treated as identifiers.
+            /// <summary>
+            /// Control if reserved keywords are treated as identifiers.
             /// If <tt>hasFeature(RESERVED_KEYWORD_AS_IDENTIFIER)</tt> returns true,
             /// treat future reserved keyword (see  Ecma-262, section 7.5.3) as ordinary
             /// identifiers but warn about this usage.
@@ -739,7 +740,7 @@ namespace EcmaScript.NET
             SetFeature (Features.E4x, (Version == Context.Versions.Default || Version >= Context.Versions.JS1_6));
             SetFeature (Features.GetterAndSetter, (Version == Context.Versions.Default || Version >= Context.Versions.JS1_5));
             SetFeature (Features.NonEcmaGetYear, (Version == Context.Versions.JS1_0 || Version == Context.Versions.JS1_1 || Version == Context.Versions.JS1_2));
-            SetFeature (Features.ToStringAsSource, Version == Context.Versions.JS1_2);
+            SetFeature (Features.ToStringAsSource, Version == Context.Versions.JS1_2);            
             SetFeature (Features.ParentProtoProperties, true);
         }
 
@@ -1951,7 +1952,7 @@ namespace EcmaScript.NET
         private SecurityController securityController;
 
         private ErrorReporter m_ErrorReporter;
-        internal RegExpProxy regExpProxy;
+        private RegExpProxy regExpProxy;
         private System.Globalization.CultureInfo culture;
         private bool generatingDebug;
         private bool generatingDebugChanged;
