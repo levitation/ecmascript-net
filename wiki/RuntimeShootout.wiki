@@ -1,4 +1,4 @@
-#summary Performance Comparison of Mono vs MS.NET
+#summary Performance Comparison of Mono vs MS.NET2
 
 = Introduction =
 
