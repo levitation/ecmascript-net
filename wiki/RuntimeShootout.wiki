@@ -6,7 +6,5 @@ Add your content here.
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+[http://www.techmonkeys.org/~wingman/wiki/RS-01.png]
+[http://www.techmonkeys.org/~wingman/wiki/RS-02.png]
