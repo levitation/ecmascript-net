@@ -3597,7 +3597,7 @@ namespace EcmaScript.NET
                                     goto case Icode_NAME_INC_DEC;
 
                                 case Icode_NAME_INC_DEC:
-                                    stack [++stackTop] = ScriptRuntime.nameIncrDecr (frame.scope, stringReg, iCode [frame.pc]);
+                                    stack [++stackTop] = ScriptRuntime.nameIncrDecr (frame.scope, stringReg, cx, iCode [frame.pc]);
                                     ++frame.pc;
 
                                     goto Loop;
@@ -3664,7 +3664,7 @@ namespace EcmaScript.NET
                                         }
                                         else {
                                             string varName = frame.idata.argNames [indexReg];
-                                            stack [stackTop] = ScriptRuntime.nameIncrDecr (frame.scope, varName, incrDecrMask);
+                                            stack [stackTop] = ScriptRuntime.nameIncrDecr (frame.scope, varName, cx, incrDecrMask);
                                         }
                                         ++frame.pc;
 

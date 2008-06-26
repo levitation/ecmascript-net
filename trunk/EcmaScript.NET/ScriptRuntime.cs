@@ -1505,12 +1505,15 @@ namespace EcmaScript.NET
             return string.Concat (ScriptConvert.ToString (val1), ScriptConvert.ToString (val2));
         }
 
-        public static object nameIncrDecr (IScriptable scopeChain, string id, int incrDecrMask)
+        public static object nameIncrDecr (IScriptable scopeChain, string id, Context cx, int incrDecrMask)
         {
             IScriptable target;
             object value;
             {
                 do {
+                    if (cx.useDynamicScope && scopeChain.ParentScope == null) {
+                        scopeChain = checkDynamicScope (cx.topCallScope, scopeChain);
+                    } 
                     target = scopeChain;
                     do {
                         value = target.Get (id, scopeChain);
