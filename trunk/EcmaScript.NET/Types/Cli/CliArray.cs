@@ -86,6 +86,9 @@ namespace EcmaScript.NET.Types.Cli
             if (0 <= index && index < length) {
                 ((System.Array)array).SetValue (Context.JsToCli (value, cls), index);
                 return value;
+            } else {
+                throw Context.ReportRuntimeErrorById ("msg.java.array.index.out.of.bounds",
+                    index, length - 1);
             }
             return base.Put (index, start, value);
         }

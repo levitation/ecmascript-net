@@ -555,6 +555,9 @@
   <data name="msg.java.member.not.found" xml:space="preserve">
     <value>Java class "{0}" has no public instance field or method named "{1}".</value>
   </data>
+  <data name="msg.java.array.index.out.of.bounds" xml:space="preserve">
+    <value>Array index {0} is out of bounds [0..{1}].</value>
+  </data>  
   <data name="msg.obj.getter.parms" xml:space="preserve">
     <value>Expected static or delegated getter {0} to take a ScriptableObject parameter.</value>
   </data>
