@@ -399,7 +399,7 @@ namespace EcmaScript.NET
         /// </exception>        
         public virtual void SetAttributes (string name, int attributes)
         {
-            CheckValidAttributes (attributes);
+            CheckValidAttributes (attributes);            
             Slot slot = GetNamedSlot (name);
             if (slot == null) {
                 throw Context.ReportRuntimeErrorById ("msg.prop.not.found", name);
