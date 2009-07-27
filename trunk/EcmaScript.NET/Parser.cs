@@ -1056,6 +1056,13 @@ namespace EcmaScript.NET
                     }
 
 
+				case Token.DEBUGGER:
+					consumeToken();
+					decompiler.AddToken(Token.DEBUGGER);
+					pn = nf.CreateDebugger(ts.Lineno);
+					break;
+
+
                 case Token.LC:
                     consumeToken ();
                     if (statementLabel != null) {

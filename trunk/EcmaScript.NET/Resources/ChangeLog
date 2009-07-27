@@ -1,3 +1,18 @@
+2009-07-27	Stephen M. McKamey <stephen at mckamey.org>
+
+	Ported Rhino fix for bug 386997 to EcmaScript.NET:
+	https://bugzilla.mozilla.org/show_bug.cgi?id=386997
+
+	Rhino Version 1.107 comment by nboyd:
+
+		Fix bug 386997 - Need to support 'debugger' statement
+
+		Adding the 'debugger' keyword will now result in a breakpoint being hit when
+		run in the Rhino debugger. The statement is ignored if the debugger is not
+		running or when compiled to Java bytecodes.
+
+		Patch from Bob Jervis (bjervis@google.com).
+
 2007-01-05    Christian Birkl <Christian.Birkl at gmail.com>
         
     * Added 'const' keyword

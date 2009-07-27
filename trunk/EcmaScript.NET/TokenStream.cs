@@ -1120,7 +1120,7 @@ namespace EcmaScript.NET
         private const int Id_char = EcmaScript.NET.Token.RESERVED;
         private const int Id_class = EcmaScript.NET.Token.RESERVED;
         private const int Id_const = EcmaScript.NET.Token.CONST;
-        private const int Id_debugger = EcmaScript.NET.Token.RESERVED;
+        private const int Id_debugger = EcmaScript.NET.Token.DEBUGGER;
         private const int Id_double = EcmaScript.NET.Token.RESERVED;
         private const int Id_enum = EcmaScript.NET.Token.RESERVED;
         private const int Id_extends = EcmaScript.NET.Token.RESERVED;
