@@ -200,7 +200,9 @@ namespace EcmaScript.NET
         public const int TO_OBJECT = LAST_BYTECODE_TOKEN + 69;
         public const int TO_DOUBLE = LAST_BYTECODE_TOKEN + 70;
         
-        public const int LAST_TOKEN = LAST_BYTECODE_TOKEN + 71;
+		public const int DEBUGGER = LAST_BYTECODE_TOKEN + 71;
+
+        public const int LAST_TOKEN = LAST_BYTECODE_TOKEN + 72;
         
 
 
